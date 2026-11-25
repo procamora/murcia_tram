@@ -72,14 +72,14 @@ class Arrival:
 def _to_int(value: Any) -> int | None:
     try:
         return int(str(value).strip())
-    except (TypeError, ValueError):
+    except TypeError, ValueError:
         return None
 
 
 def _to_float(value: Any) -> float | None:
     try:
         return float(str(value).strip())
-    except (TypeError, ValueError):
+    except TypeError, ValueError:
         return None
 
 
