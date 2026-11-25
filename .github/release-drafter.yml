@@ -1,0 +1,18 @@
+name-template: "v$RESOLVED_VERSION"
+tag-template: "v$RESOLVED_VERSION"
+categories:
+  - title: "Novedades"
+    labels: [enhancement, feature]
+  - title: "Correcciones"
+    labels: [bug, fix]
+  - title: "Mantenimiento"
+    labels: [dependencies, chore, github_actions]
+change-template: "- $TITLE (#$NUMBER) @$AUTHOR"
+version-resolver:
+  minor:
+    labels: [enhancement, feature]
+  default: patch
+template: |
+  ## Cambios
+
+  $CHANGES

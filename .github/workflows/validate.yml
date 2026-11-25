@@ -1,0 +1,36 @@
+# VALIDATE — validaciones específicas de Home Assistant y HACS.
+#   · hassfest: el validador oficial de HA (manifest.json, traducciones, estructura).
+#   · HACS action: comprueba que el repo cumple los requisitos para publicarse en HACS.
+# Cuándo usarlo: siempre en integraciones custom. Además corre cada día (cron)
+# porque HA y HACS cambian sus reglas y puede romperse SIN que tú toques nada.
+name: Validate
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+  schedule:
+    - cron: "0 4 * * *"     # todos los días a las 04:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  hassfest:
+    name: Hassfest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: home-assistant/actions/hassfest@master
+
+  hacs:
+    name: HACS
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hacs/action@main
+        with:
+          category: integration
+          # Descomenta si HACS se queja de que el repo aún no está en brands:
+          # ignore: brands

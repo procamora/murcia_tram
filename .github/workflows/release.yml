@@ -1,0 +1,41 @@
+# RELEASE — publica una release en GitHub al empujar una etiqueta (tag) vX.Y.Z.
+# Cuándo usarlo: cada vez que quieras una versión nueva. HACS instala la última
+# release, así que los usuarios solo ven tus cambios si publicas una.
+#
+#   1. Sube "version" en custom_components/murcia_tram/manifest.json (p. ej. 0.2.0)
+#   2. git tag v0.2.0 && git push origin v0.2.0
+#   3. El workflow comprueba que tag y manifest coinciden, empaqueta y publica.
+name: Release
+
+on:
+  push:
+    tags: ["v*.*.*"]
+
+permissions:
+  contents: write           # necesario para crear la release
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Comprobar que el tag coincide con la versión del manifest
+        run: |
+          manifest_version=$(jq -r .version custom_components/murcia_tram/manifest.json)
+          tag_version="${GITHUB_REF_NAME#v}"
+          if [ "$manifest_version" != "$tag_version" ]; then
+            echo "::error::Tag ($tag_version) distinto de manifest.json ($manifest_version)"
+            exit 1
+          fi
+
+      - name: Empaquetar la integración
+        run: |
+          cd custom_components/murcia_tram
+          zip -r ../../murcia_tram.zip .
+
+      - name: Crear release en GitHub
+        uses: softprops/action-gh-release@v2
+        with:
+          files: murcia_tram.zip
+          generate_release_notes: true    # changelog automático a partir de PRs/commits

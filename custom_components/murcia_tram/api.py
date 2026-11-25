@@ -131,9 +131,7 @@ def parse_arrivals(payload: str) -> list[Arrival]:
     except ET.ParseError as err:
         raise MurciaTramResponseError("Arrival data is not valid XML") from err
     if _local_name(root.tag) != "ArrayOfEstimacionHoraria":
-        raise MurciaTramResponseError(
-            f"Unexpected XML root element: {_local_name(root.tag)}"
-        )
+        raise MurciaTramResponseError(f"Unexpected XML root element: {_local_name(root.tag)}")
 
     arrivals: list[Arrival] = []
     for element in root:
@@ -182,9 +180,7 @@ class MurciaTramClient:
                 **kwargs,
             ) as response:
                 if response.status != 200:
-                    raise MurciaTramConnectionError(
-                        f"HTTP {response.status} from {path}"
-                    )
+                    raise MurciaTramConnectionError(f"HTTP {response.status} from {path}")
                 body = await response.content.read(MAX_RESPONSE_BYTES + 1)
         except (TimeoutError, aiohttp.ClientError) as err:
             raise MurciaTramConnectionError(f"Error calling {path}: {err}") from err
