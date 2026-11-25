@@ -35,7 +35,7 @@ jobs:
           zip -r ../../murcia_tram.zip .
 
       - name: Crear release en GitHub
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: murcia_tram.zip
           generate_release_notes: true    # changelog automático a partir de PRs/commits
