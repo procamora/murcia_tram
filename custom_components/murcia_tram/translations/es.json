@@ -1,0 +1,42 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Elige una parada",
+        "description": "Selecciona la parada de tranvía que quieres seguir. Aparece preseleccionada la más cercana a tu casa.",
+        "data": {
+          "stop": "Parada"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "No se pudo conectar con tranviademurcia.es. Vuelve a enviar para reintentarlo.",
+      "invalid_response": "tranviademurcia.es respondió con datos que no se pueden leer.",
+      "unknown_stop": "Esa parada no está en la lista.",
+      "unknown": "Error inesperado."
+    },
+    "abort": {
+      "already_configured": "Esta parada ya está configurada."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "next_tram": {
+        "name": "Próximo tranvía a {destination}",
+        "state_attributes": {
+          "line": { "name": "Línea" },
+          "vehicle": { "name": "Tranvía" },
+          "track": { "name": "Vía" }
+        }
+      },
+      "second_tram": {
+        "name": "Siguiente tranvía a {destination}",
+        "state_attributes": {
+          "line": { "name": "Línea" },
+          "vehicle": { "name": "Tranvía" },
+          "track": { "name": "Vía" }
+        }
+      }
+    }
+  }
+}

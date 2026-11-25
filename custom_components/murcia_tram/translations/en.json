@@ -1,0 +1,42 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Choose a stop",
+        "description": "Pick the tram stop you want to follow. The closest one to your home is preselected.",
+        "data": {
+          "stop": "Stop"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not reach tranviademurcia.es. Submit again to retry.",
+      "invalid_response": "tranviademurcia.es answered with data that could not be read.",
+      "unknown_stop": "That stop is not in the list.",
+      "unknown": "Unexpected error."
+    },
+    "abort": {
+      "already_configured": "This stop is already configured."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "next_tram": {
+        "name": "Next tram to {destination}",
+        "state_attributes": {
+          "line": { "name": "Line" },
+          "vehicle": { "name": "Tram" },
+          "track": { "name": "Track" }
+        }
+      },
+      "second_tram": {
+        "name": "Following tram to {destination}",
+        "state_attributes": {
+          "line": { "name": "Line" },
+          "vehicle": { "name": "Tram" },
+          "track": { "name": "Track" }
+        }
+      }
+    }
+  }
+}

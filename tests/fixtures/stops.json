@@ -1,0 +1,6 @@
+[
+  {"id": "0", "nombre": "Estación Norte", "tarifa": "tarifa_interurbana", "lat": "38.0400", "lng": "-1.1460", "saeid": "12"},
+  {"id": "1", "nombre": "Plaza Mayor", "tarifa": "tarifa_interurbana", "lat": "38.0347", "lng": "-1.1437", "saeid": "11"},
+  {"id": "2", "nombre": "Parque Central", "tarifa": "tarifa_urbana", "lat": "38.0100", "lng": "-1.1300", "saeid": "10"},
+  {"id": "3", "nombre": "Campus", "tarifa": "tarifa_urbana", "lat": "37.9900", "lng": "-1.1200", "saeid": "8"}
+]

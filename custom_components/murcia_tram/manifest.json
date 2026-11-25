@@ -1,0 +1,12 @@
+{
+  "domain": "murcia_tram",
+  "name": "Murcia Tram",
+  "codeowners": ["@procamora"],
+  "config_flow": true,
+  "documentation": "https://github.com/procamora/murcia_tram",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/procamora/murcia_tram/issues",
+  "requirements": [],
+  "version": "0.1.0"
+}
