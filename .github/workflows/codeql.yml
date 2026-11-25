@@ -6,9 +6,9 @@ name: CodeQL
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
   pull_request:
-    branches: [main]
+    branches: [main, develop]
   schedule:
     - cron: "30 5 * * 1"    # lunes 05:30 UTC: detecta nuevas reglas aunque no haya commits
 
