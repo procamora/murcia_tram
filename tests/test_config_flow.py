@@ -59,6 +59,10 @@ async def test_user_flow_creates_entry(
     assert result["result"].unique_id == "11"
     assert len(mock_setup.mock_calls) == 1
 
+    # Every request identifies the integration instead of posing as a browser.
+    for _method, _url, _data, headers in aioclient_mock.mock_calls:
+        assert headers["User-Agent"].startswith("murcia_tram (+https://github.com/")
+
 
 async def test_user_flow_already_configured(
     hass: HomeAssistant, aioclient_mock: AiohttpClientMocker, stops_payload: str

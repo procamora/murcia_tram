@@ -63,41 +63,148 @@ La más cercana a tu casa aparece ya seleccionada.
 
 ## Tarjetas de ejemplo
 
-Tarjetas nativas, no hace falta instalar nada más:
+Todas son nativas de Home Assistant: no hace falta instalar nada. Para añadirlas:
+*Editar panel → Añadir tarjeta → Manual* y pega el YAML.
+
+Los ejemplos usan los IDs de una instalación en español para la parada La Ladera
+(`sensor.la_ladera_proximo_tranvia_a_universidades`…). En inglés serían
+`sensor.la_ladera_next_tram_to_universidades` y `sensor.la_ladera_following_tram_to_…`.
+Comprueba los tuyos en *Ajustes → Dispositivos y servicios → Murcia Tram* y sustitúyelos.
+
+Las tarjetas 1 y 2 suponen que tardas **6 minutos andando** hasta la parada y quieres
+**2 minutos de margen**. Ajusta `walk` y `margin` en la tarjeta 1 y los cortes `from: 6` /
+`from: 8` en la 2.
+
+### 1. ¿Cuándo salgo?
+
+Por cada sentido te dice si te da tiempo (*Sal en X min*), si tienes que salir ya, o si
+pierdes el próximo y cuándo salir para el siguiente.
+
+```yaml
+type: markdown
+title: 🚋 ¿Cuándo salgo?
+content: |
+  {%- set walk = 6 -%}{#- minutos andando de casa a la parada -#}
+  {%- set margin = 2 -%}{#- con menos holgura que esto, «sal ya» -#}
+  {%- set dirs = [
+    ('Universidades', 'sensor.la_ladera_proximo_tranvia_a_universidades', 'sensor.la_ladera_siguiente_tranvia_a_universidades'),
+    ('Nueva Condomina', 'sensor.la_ladera_proximo_tranvia_a_nueva_condomina', 'sensor.la_ladera_siguiente_tranvia_a_nueva_condomina'),
+  ] -%}
+  {%- for name, e1, e2 in dirs %}
+  {%- set n1 = states(e1) | int(-1) %}
+  {%- set n2 = states(e2) | int(-1) %}
+  {%- if n1 < 0 %}
+  <ha-alert alert-type="info"><b>→ {{ name }}:</b> Sin servicio ahora mismo</ha-alert>
+  {%- elif n1 - walk >= margin %}
+  <ha-alert alert-type="success"><b>→ {{ name }}:</b> Sal en {{ n1 - walk }} min · pasa en {{ n1 }} min</ha-alert>
+  {%- elif n1 >= walk %}
+  <ha-alert alert-type="warning"><b>→ {{ name }}:</b> ¡Sal ya! Pasa en {{ n1 }} min</ha-alert>
+  {%- elif n2 >= walk %}
+  <ha-alert alert-type="error"><b>→ {{ name }}:</b> A este no llegas ({{ n1 }} min). Para el siguiente sal en {{ n2 - walk }} min</ha-alert>
+  {%- else %}
+  <ha-alert alert-type="error"><b>→ {{ name }}:</b> No llegas a los próximos ({{ n1 }} y {{ n2 if n2 >= 0 else '—' }} min)</ha-alert>
+  {%- endif %}
+  {%- endfor %}
+```
+
+### 2. Semáforo
+
+Un reloj por sentido: rojo si no llegas, naranja si tienes que salir ya, verde si te da
+tiempo.
 
 ```yaml
 type: grid
 columns: 2
 square: false
 cards:
-  - type: tile
+  - type: gauge
     entity: sensor.la_ladera_proximo_tranvia_a_universidades
     name: → Universidades
-  - type: tile
+    unit: min
+    min: 0
+    max: 20
+    needle: true
+    segments:
+      - from: 0
+        color: "#db4437"
+      - from: 6
+        color: "#ffa600"
+      - from: 8
+        color: "#43a047"
+  - type: gauge
     entity: sensor.la_ladera_proximo_tranvia_a_nueva_condomina
     name: → Nueva Condomina
-  - type: tile
-    entity: sensor.la_ladera_siguiente_tranvia_a_universidades
-    name: Siguiente
-  - type: tile
-    entity: sensor.la_ladera_siguiente_tranvia_a_nueva_condomina
-    name: Siguiente
+    unit: min
+    min: 0
+    max: 20
+    needle: true
+    segments:
+      - from: 0
+        color: "#db4437"
+      - from: 6
+        color: "#ffa600"
+      - from: 8
+        color: "#43a047"
 ```
 
-Versión compacta con Markdown:
+### 3. Tabla compacta
+
+Próximo, siguiente y número de tranvía de cada sentido.
 
 ```yaml
 type: markdown
 title: 🚋 La Ladera
-content: >-
-  {% macro t(e) -%}
-  {{- (states(e) ~ ' min') if has_value(e) else '—' -}}
-  {%- endmacro %}
-  **Hacia Universidades:** {{ t('sensor.la_ladera_proximo_tranvia_a_universidades') }}
-  · luego {{ t('sensor.la_ladera_siguiente_tranvia_a_universidades') }}
+content: |
+  {%- macro t(e) -%}{{ (states(e) ~ ' min') if has_value(e) else '—' }}{%- endmacro %}
+  | Sentido | Próximo | Siguiente | Tranvía |
+  |:--|:-:|:-:|:-:|
+  | → Universidades | **{{ t('sensor.la_ladera_proximo_tranvia_a_universidades') }}** | {{ t('sensor.la_ladera_siguiente_tranvia_a_universidades') }} | {{ state_attr('sensor.la_ladera_proximo_tranvia_a_universidades', 'vehicle') or '—' }} |
+  | → Nueva Condomina | **{{ t('sensor.la_ladera_proximo_tranvia_a_nueva_condomina') }}** | {{ t('sensor.la_ladera_siguiente_tranvia_a_nueva_condomina') }} | {{ state_attr('sensor.la_ladera_proximo_tranvia_a_nueva_condomina', 'vehicle') or '—' }} |
+```
 
-  **Hacia Nueva Condomina:** {{ t('sensor.la_ladera_proximo_tranvia_a_nueva_condomina') }}
-  · luego {{ t('sensor.la_ladera_siguiente_tranvia_a_nueva_condomina') }}
+### 4. Tiles con modo noche
+
+Las cuatro tarjetas de siempre, que de madrugada se sustituyen por un único aviso de
+«sin servicio».
+
+```yaml
+type: vertical-stack
+cards:
+  - type: conditional
+    conditions:
+      - condition: state
+        entity: sensor.la_ladera_proximo_tranvia_a_universidades
+        state_not: unavailable
+    card:
+      type: grid
+      columns: 2
+      square: false
+      cards:
+        - type: tile
+          entity: sensor.la_ladera_proximo_tranvia_a_universidades
+          name: → Universidades
+          icon: mdi:tram
+        - type: tile
+          entity: sensor.la_ladera_proximo_tranvia_a_nueva_condomina
+          name: → Nueva Condomina
+          icon: mdi:tram
+        - type: tile
+          entity: sensor.la_ladera_siguiente_tranvia_a_universidades
+          name: Siguiente
+          icon: mdi:timer-sand
+        - type: tile
+          entity: sensor.la_ladera_siguiente_tranvia_a_nueva_condomina
+          name: Siguiente
+          icon: mdi:timer-sand
+  - type: conditional
+    conditions:
+      - condition: state
+        entity: sensor.la_ladera_proximo_tranvia_a_universidades
+        state: unavailable
+    card:
+      type: markdown
+      content: |
+        <ha-alert alert-type="info"><b>La Ladera:</b> ahora mismo no hay servicio de tranvía.</ha-alert>
 ```
 
 ## Aviso para salir de casa
@@ -133,8 +240,10 @@ La web oficial consulta, para cada parada:
 - `POST https://tranviademurcia.es/webservicecall.php` con `idParada=<saeid>&via=0`: XML con
   los dos próximos tranvías de cada sentido.
 
-La integración hace esas mismas peticiones, una por parada y minuto. No reduzcas el
-intervalo: es un servicio público y gratuito.
+La integración hace esas mismas peticiones, una por parada y minuto, y se identifica con
+el User-Agent `murcia_tram (+https://github.com/procamora/murcia_tram; ...)` para que el
+operador sepa quién consulta y cómo contactar. No reduzcas el intervalo: es un servicio
+público y gratuito.
 
 ## Uso de los datos
 

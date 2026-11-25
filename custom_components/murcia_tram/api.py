@@ -23,12 +23,9 @@ BASE_URL = "https://tranviademurcia.es"
 STOPS_PATH = "/api-horarios/get_paradas"
 ARRIVALS_PATH = "/webservicecall.php"
 
-# The site sits behind Cloudflare; a browser-like user agent avoids being
-# treated as a bot. Requests are infrequent (one per stop per minute).
-USER_AGENT = (
-    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-    "(KHTML, like Gecko) Chrome/130.0 Safari/537.36"
-)
+# Identify the integration honestly so the operator can see who is calling and
+# how to get in touch. Requests are infrequent (one per stop per minute).
+USER_AGENT = "murcia_tram (+https://github.com/procamora/murcia_tram; Home Assistant integration)"
 DEFAULT_TIMEOUT = 15
 MAX_RESPONSE_BYTES = 512 * 1024
 
