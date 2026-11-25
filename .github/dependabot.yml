@@ -1,0 +1,15 @@
+# DEPENDABOT — no es un workflow, es un bot que abre PRs automáticos para
+# actualizar dependencias. Cuándo usarlo: siempre; mantiene al día las versiones
+# de las Actions (importante: van fijadas a @v4, @v5...) y los paquetes de test.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    labels: [dependencies, github_actions]
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: weekly
+    labels: [dependencies]

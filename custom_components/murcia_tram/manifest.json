@@ -1,7 +1,12 @@
 {
   "domain": "murcia_tram",
   "name": "Murcia Tram",
-  "codeowners": ["@procamora"],
+  "categories": [
+    "vehicles_transport.public_transport"
+  ],
+  "codeowners": [
+    "@procamora"
+  ],
   "config_flow": true,
   "documentation": "https://github.com/procamora/murcia_tram",
   "integration_type": "service",

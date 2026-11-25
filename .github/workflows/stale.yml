@@ -1,0 +1,28 @@
+# STALE — marca como inactivos y cierra issues/PRs sin respuesta.
+# Cuándo usarlo: cuando el repo empieza a recibir issues que se quedan esperando
+# datos del usuario ("¿puedes enviar el diagnóstico?") y nunca contestan.
+name: Stale
+
+on:
+  schedule:
+    - cron: "15 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v9
+        with:
+          days-before-stale: 30
+          days-before-close: 7
+          stale-issue-message: >
+            Sin actividad en 30 días. Se cerrará en 7 si no hay novedades.
+          close-issue-message: Cerrado por inactividad. Reábrelo si sigue ocurriendo.
+          stale-pr-message: Este PR lleva 30 días sin actividad.
+          exempt-issue-labels: pinned,security,bug
+          exempt-pr-labels: pinned,security

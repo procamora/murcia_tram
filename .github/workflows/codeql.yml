@@ -1,0 +1,29 @@
+# CODEQL — análisis estático de seguridad de GitHub (busca vulnerabilidades).
+# Cuándo usarlo: en cualquier repo público; es gratis. Los resultados salen en
+# Security → Code scanning. Útil cuando procesas datos externos (aquí, el XML/JSON
+# de la web del tranvía).
+name: CodeQL
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    - cron: "30 5 * * 1"    # lunes 05:30 UTC: detecta nuevas reglas aunque no haya commits
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write    # necesario para publicar los resultados
+    steps:
+      - uses: actions/checkout@v5
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: python
+      - uses: github/codeql-action/analyze@v3

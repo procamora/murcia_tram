@@ -1,0 +1,22 @@
+# RELEASE DRAFTER — mantiene un borrador de release con el changelog
+# agrupado por categorías según las etiquetas de los PRs fusionados.
+# Cuándo usarlo: si trabajas con PRs y quieres notas de versión limpias.
+# Alternativa más simple: generate_release_notes en release.yml (ya activado).
+# Es opcional: si no lo quieres, borra este archivo y .github/release-drafter.yml.
+name: Release drafter
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: release-drafter/release-drafter@v6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

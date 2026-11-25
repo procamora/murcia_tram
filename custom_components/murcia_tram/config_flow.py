@@ -51,9 +51,7 @@ class MurciaTramConfigFlow(ConfigFlow, domain=DOMAIN):
         )
 
     def _schema(self, stops: list[Stop]) -> vol.Schema:
-        options = [
-            SelectOptionDict(value=str(stop.sae_id), label=stop.name) for stop in stops
-        ]
+        options = [SelectOptionDict(value=str(stop.sae_id), label=stop.name) for stop in stops]
         nearest = self._nearest_stop(stops)
         key = (
             vol.Required(CONF_STOP, default=str(nearest.sae_id))
@@ -68,9 +66,7 @@ class MurciaTramConfigFlow(ConfigFlow, domain=DOMAIN):
             }
         )
 
-    async def async_step_user(
-        self, user_input: dict[str, Any] | None = None
-    ) -> ConfigFlowResult:
+    async def async_step_user(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         """Show the stop list and create an entry for the chosen stop."""
         errors: dict[str, str] = {}
 
@@ -92,9 +88,7 @@ class MurciaTramConfigFlow(ConfigFlow, domain=DOMAIN):
             user_input = None
 
         if user_input is not None and CONF_STOP in user_input:
-            stop = next(
-                (s for s in self._stops if str(s.sae_id) == user_input[CONF_STOP]), None
-            )
+            stop = next((s for s in self._stops if str(s.sae_id) == user_input[CONF_STOP]), None)
             if stop is None:
                 errors["base"] = "unknown_stop"
             else:

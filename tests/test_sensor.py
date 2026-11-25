@@ -82,9 +82,7 @@ async def test_spanish_entity_ids(
     assert await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
 
-    assert _entity_id(hass, "11_0_Campus") == (
-        "sensor.plaza_mayor_proximo_tranvia_a_campus"
-    )
+    assert _entity_id(hass, "11_0_Campus") == ("sensor.plaza_mayor_proximo_tranvia_a_campus")
     assert _entity_id(hass, "11_1_Estación Norte") == (
         "sensor.plaza_mayor_siguiente_tranvia_a_estacion_norte"
     )

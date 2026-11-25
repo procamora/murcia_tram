@@ -1,0 +1,43 @@
+# TESTS — ejecuta pytest en cada push y PR.
+# Cuándo usarlo: SIEMPRE. Es el workflow básico de integración continua (CI):
+# garantiza que un cambio no rompe lo que ya funcionaba.
+name: Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+  workflow_dispatch:        # permite lanzarlo a mano desde la pestaña Actions
+
+# Si empujas dos commits seguidos, cancela la ejecución anterior (ahorra minutos).
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Principio de mínimo privilegio: el workflow solo puede leer el repo.
+permissions:
+  contents: read
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip                          # cachea las dependencias entre ejecuciones
+          cache-dependency-path: requirements_test.txt
+
+      - name: Instalar dependencias
+        run: pip install -r requirements_test.txt
+
+      - name: Ejecutar tests con cobertura
+        run: pytest --cov=custom_components.murcia_tram --cov-report=term-missing --cov-report=xml
+
+      - name: Subir informe de cobertura
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage.xml

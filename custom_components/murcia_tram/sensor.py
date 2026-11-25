@@ -100,9 +100,7 @@ class TranviaArrivalSensor(CoordinatorEntity[MurciaTramCoordinator], SensorEntit
     _attr_suggested_display_precision = 0
     _attr_icon = "mdi:tram"
 
-    def __init__(
-        self, coordinator: MurciaTramCoordinator, destination: str, rank: int
-    ) -> None:
+    def __init__(self, coordinator: MurciaTramCoordinator, destination: str, rank: int) -> None:
         super().__init__(coordinator)
         entry = coordinator.config_entry
         sae_id: int = entry.data[CONF_SAE_ID]

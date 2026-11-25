@@ -45,9 +45,7 @@ async def test_user_flow_creates_entry(
     assert result["step_id"] == "user"
     assert _default(result, CONF_STOP) == "11"
 
-    with patch(
-        "custom_components.murcia_tram.async_setup_entry", return_value=True
-    ) as mock_setup:
+    with patch("custom_components.murcia_tram.async_setup_entry", return_value=True) as mock_setup:
         result = await hass.config_entries.flow.async_configure(
             result["flow_id"], {CONF_STOP: "11"}
         )
@@ -95,9 +93,7 @@ async def test_user_flow_cannot_connect_then_recovers(
     assert result["errors"] == {}
 
     with patch("custom_components.murcia_tram.async_setup_entry", return_value=True):
-        result = await hass.config_entries.flow.async_configure(
-            result["flow_id"], {CONF_STOP: "8"}
-        )
+        result = await hass.config_entries.flow.async_configure(result["flow_id"], {CONF_STOP: "8"})
     assert result["type"] is FlowResultType.CREATE_ENTRY
     assert result["title"] == "Campus"
 
